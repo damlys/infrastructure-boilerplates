@@ -1,0 +1,24 @@
+version: "2.4"
+services:
+  redis:
+    image: redis:latest
+    command: ["--requirepass", "${REDIS_PASSWORD}"]
+    volumes:
+    - type: volume
+      source: redis_data
+      target: /data
+
+  redis_commander:
+    depends_on:
+    - redis
+    image: rediscommander/redis-commander:latest
+    environment:
+      HTTP_USER: "${REDIS_COMMANDER_USER}"
+      HTTP_PASSWORD: "${REDIS_PASSWORD}"
+      REDIS_HOSTS: "session:redis:6379:0:${REDIS_PASSWORD},cache:redis:6379:1:${REDIS_PASSWORD}"
+    ports:
+    - ${REDIS_COMMANDER_PORT}:8081
+
+volumes:
+  redis_data:
+    driver: local

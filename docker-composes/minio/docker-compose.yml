@@ -1,0 +1,29 @@
+version: "2.4"
+services:
+  minio:
+    image: minio/minio:latest
+    environment:
+      MINIO_ACCESS_KEY: "${MINIO_USER}"
+      MINIO_SECRET_KEY: "${MINIO_PASSWORD}"
+    command: ["minio", "server", "/data"]
+    ports:
+    - ${MINIO_PORT}:9000
+    volumes:
+    - type: volume
+      source: minio_data
+      target: /data
+
+  minio_constructor:
+    depends_on:
+    - minio
+    image: minio/mc:latest
+    entrypoint: |
+      ash -ce "
+        mc config host add minio_server http://minio:9000 '${MINIO_USER}' '${MINIO_PASSWORD}'
+        mc mb --ignore-existing minio_server/bucket0
+        mc policy set download minio_server/bucket0
+      "
+
+volumes:
+  minio_data:
+    driver: local

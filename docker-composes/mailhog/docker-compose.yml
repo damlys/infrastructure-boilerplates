@@ -1,0 +1,11 @@
+version: "2.4"
+services:
+  mailhog:
+    image: mailhog/mailhog:latest
+    entrypoint: |
+      ash -ce "
+        echo \"${MAILHOG_USER}:$$(MailHog bcrypt '${MAILHOG_PASSWORD}')\" > /home/mailhog/htpasswd
+        exec MailHog -auth-file=/home/mailhog/htpasswd
+      "
+    ports:
+    - ${MAILHOG_PORT}:8025

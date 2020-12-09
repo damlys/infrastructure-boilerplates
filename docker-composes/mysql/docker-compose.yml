@@ -1,0 +1,27 @@
+version: "2.4"
+services:
+  mysql:
+    image: mysql:5 #:latest
+    environment:
+      MYSQL_ROOT_PASSWORD: "${MYSQL_PASSWORD}"
+      MYSQL_USER: "${MYSQL_USER}"
+      MYSQL_PASSWORD: "${MYSQL_PASSWORD}"
+      MYSQL_DATABASE: db0
+    volumes:
+    - type: volume
+      source: mysql_data
+      target: /var/lib/mysql
+
+  phpmyadmin:
+    depends_on:
+    - mysql
+    image: phpmyadmin/phpmyadmin:latest
+    environment:
+      PMA_HOST: mysql
+      PMA_PORT: 3306
+    ports:
+    - ${PHPMYADMIN_PORT}:80
+
+volumes:
+  mysql_data:
+    driver: local
