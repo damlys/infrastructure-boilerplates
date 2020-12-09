@@ -2,6 +2,7 @@ Lint chart
 
 ```shell script
 $ helm lint
+$ helm template . | kubectl apply --filename=- --dry-run=client
 ```
 
 Push chart
