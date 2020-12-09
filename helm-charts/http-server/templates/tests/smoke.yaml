@@ -1,0 +1,78 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: "{{ .Release.Name }}-http-server-smoke-tests"
+  namespace: "{{ .Release.Namespace }}"
+  labels:
+    {{- include "http-server.metaLabels" $ | nindent 4 }}
+    app.kubernetes.io/component: "http-server-smoke-tests"
+  annotations:
+    helm.sh/hook: "test-success"
+    checksum/config: >
+      {{ include (print .Template.BasePath "/cm.yaml") $ | sha256sum }}
+      {{ include (print .Template.BasePath "/secret.yaml") $ | sha256sum }}
+spec:
+  restartPolicy: Never
+  terminationGracePeriodSeconds: {{ .Values.terminationGracePeriodSeconds }}
+  imagePullSecrets:
+    {{- toYaml .Values.imagePullSecrets | nindent 4 }}
+  securityContext:
+    {{- toYaml .Values.securityContext.pod | nindent 4 }}
+  initContainers:
+  - name: "{{ .Release.Name }}-wait-for-http-server"
+    image: nicolaka/netshoot:latest
+    imagePullPolicy: IfNotPresent
+    command:
+    - sh
+    args:
+    - -ce
+    - |
+      until nc -vz "{{ .Release.Name }}-http-server" 80
+      do
+        echo "Waiting for {{ .Release.Name }}-http-server:80"
+        sleep 1
+      done
+    securityContext:
+      runAsNonRoot: true
+      runAsUser: 65534
+      runAsGroup: 65534
+    resources:
+      requests:
+        cpu: 25m
+        memory: 32M
+      limits:
+        cpu: 50m
+        memory: 64M
+  containers:
+  - name: "{{ .Release.Name }}-http-server-smoke-tests"
+    image: "{{ .Values.image }}"
+    imagePullPolicy: "{{ .Values.imagePullPolicy }}"
+    {{- if .Values.smokeTestsCommand }}
+    command:
+    {{- toYaml .Values.smokeTestsCommand | nindent 4 }}
+    {{- end }}
+    {{- if .Values.smokeTestsArgs }}
+    args:
+    {{- toYaml .Values.smokeTestsArgs | nindent 4 }}
+    {{- end }}
+    terminationMessagePolicy: File
+    terminationMessagePath: "{{ .Values.terminationMessagePath }}"
+    envFrom:
+    - configMapRef:
+        name: "{{ .Release.Name }}-http-server"
+    - secretRef:
+        name: "{{ .Release.Name }}-http-server"
+    securityContext:
+      {{- toYaml .Values.securityContext.container | nindent 6 }}
+    resources:
+      {{- toYaml .Values.resources | nindent 6 }}
+    volumeMounts:
+      {{- toYaml .Values.volumes.mounts | nindent 6 }}
+  volumes:
+    {{- toYaml .Values.volumes.sources | nindent 4 }}
+  nodeSelector:
+    {{- toYaml .Values.nodeSelector | nindent 4 }}
+  affinity:
+    {{- toYaml .Values.affinity | nindent 4 }}
+  tolerations:
+    {{- toYaml .Values.tolerations | nindent 4 }}

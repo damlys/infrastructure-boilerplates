@@ -1,0 +1,10 @@
+apiVersion: v2
+name: http-server
+version: 0.0.0
+dependencies:
+- name: mongodb
+  repository: https://kubernetes-charts.storage.googleapis.com
+  version: 7.8.1
+  condition: mongodb.enabled
+sources:
+- https://github.com/helm/charts/tree/master/stable/mongodb

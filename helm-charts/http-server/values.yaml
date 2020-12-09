@@ -1,0 +1,121 @@
+image: "example-image:0.0.0"
+imagePullPolicy: IfNotPresent
+imagePullSecrets: []
+#- name: "example-image-pull-secret"
+
+environmentVariables:
+  decoded: {}
+  #  USERNAME: ""
+  encoded: {}
+  #  PASSWORD: ""
+
+deploymentCommand: []
+#- node
+#- app.js
+deploymentArgs: []
+#- run-http-server
+smokeTestsCommand: []
+#- node
+#- app.js
+smokeTestsArgs: []
+#- run-smoke-tests
+
+minReplicas: 2
+maxReplicas: 3
+strategy:
+  type: RollingUpdate
+  #rollingUpdate:
+  #  maxSurge: 25%
+  #  maxUnavailable: 25%
+progressDeadlineSeconds: 600
+minReadySeconds: 0
+readinessProbe: {}
+#  initialDelaySeconds: 30
+#  periodSeconds: 10
+#  timeoutSeconds: 1
+#  failureThreshold: 3
+#  successThreshold: 1
+livenessProbe: {}
+#  initialDelaySeconds: 30
+#  periodSeconds: 10
+#  timeoutSeconds: 1
+#  failureThreshold: 3
+#  successThreshold: 1
+terminationGracePeriodSeconds: 30
+terminationMessagePath: /dev/termination-log
+
+podAnnotations: {}
+#  prometheus.io/scrape: "true"
+
+securityContext:
+  pod: {}
+  #  fsGroup: 1000
+  container: {}
+  #  capabilities:
+  #    drop:
+  #      - ALL
+  #  readOnlyRootFilesystem: true
+  #  runAsNonRoot: true
+  #  runAsUser: 1000
+  #  runAsGroup: 1000
+
+resources: {}
+#  requests:
+#    cpu: 100m
+#    memory: 128M
+#  limits:
+#    cpu: 1000m
+#    memory: 1G
+
+nodeSelector: {}
+
+affinity: {}
+
+tolerations: []
+
+extraPorts: []
+#- name: debugger
+#  containerPort: 9229
+#  hostPort: 9229
+#  protocol: TCP
+
+service:
+  annotations: {}
+  #  foo: "bar"
+  type: ClusterIP
+  clusterIP: ""
+  loadBalancerIP: ""
+  nodePort: 0
+
+ingress:
+  enabled: false
+  annotations: {}
+  #  ingress.kubernetes.io/auth-type: "basic"
+  #  ingress.kubernetes.io/auth-secret: "example-htpasswd-secret"
+  hosts: []
+  #- example.tld
+  #- www.example.tld
+  #- www.example.tld/api/v1
+  tls: []
+  #- hosts:
+  #  - example.tld
+  #  - www.example.tld
+  #  secretName: "tls-secret"
+
+volumes:
+  sources: []
+  #- name: workspace-code
+  #  hostPath:
+  #    type: Directory
+  #    path: /home/<USER>/workspace/<PROJECT>/...
+  #- name: npm-cache
+  #  persistentVolumeClaim:
+  #    claimName: local-npm-cache
+  mounts: []
+  #- name: workspace-code
+  #  mountPath: /workspace
+  #- name: npm-cache
+  #  mountPath: /var/cache/npm
+
+mongodb:
+  enabled: false
