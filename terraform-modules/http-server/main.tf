@@ -1,15 +1,3 @@
-terraform {
-  required_providers {
-    kubernetes = {
-      source = "hashicorp/kubernetes"
-      version = "~> 1.13.3"
-    }
-  }
-}
-
-provider "kubernetes" {
-}
-
 locals {
   common_name = "${var.names_prefix}http-server${var.names_suffix}"
   match_labels = {

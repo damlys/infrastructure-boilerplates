@@ -58,6 +58,7 @@ variable "environment_variables" {
     plain = {}
     secret = {}
   }
+  sensitive = true
 }
 
 /*
@@ -154,7 +155,7 @@ variable "capabilities_add" {
 variable "capabilities_drop" {
   type = list(string)
   default = [
-    "ALL"
+    "CAP_CHOWN"
   ]
 }
 variable "readiness_probe_http_get_path" {
