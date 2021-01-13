@@ -7,6 +7,9 @@ services:
       MYSQL_USER: "${MYSQL_USER}"
       MYSQL_PASSWORD: "${MYSQL_PASSWORD}"
       MYSQL_DATABASE: db0
+    command:
+    - "--character-set-server=utf8mb4"
+    - "--collation-server=utf8mb4_general_ci"
     volumes:
     - type: volume
       source: mysql_data
@@ -19,6 +22,8 @@ services:
     environment:
       PMA_HOST: mysql
       PMA_PORT: 3306
+      PMA_USER: "${MYSQL_USER}"
+      PMA_PASSWORD: "${MYSQL_PASSWORD}"
     ports:
     - ${PHPMYADMIN_PORT}:80
 

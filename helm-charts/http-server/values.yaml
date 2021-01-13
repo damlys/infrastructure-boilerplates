@@ -53,7 +53,7 @@ securityContext:
   container: {}
   #  capabilities:
   #    drop:
-  #      - ALL
+  #    - CAP_CHOWN
   #  readOnlyRootFilesystem: true
   #  runAsNonRoot: true
   #  runAsUser: 1000
