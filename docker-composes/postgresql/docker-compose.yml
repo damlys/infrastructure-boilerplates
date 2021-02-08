@@ -1,4 +1,4 @@
-version: "2.4"
+version: "3.8"
 services:
   postgres:
     image: postgres:latest
@@ -16,10 +16,13 @@ services:
     - postgres
     image: dpage/pgadmin4:latest
     environment:
-      PGADMIN_DEFAULT_EMAIL: "${POSTGRES_USER}"
+      PGADMIN_DEFAULT_EMAIL: "${PGADMIN_EMAIL}"
       PGADMIN_DEFAULT_PASSWORD: "${POSTGRES_PASSWORD}"
     ports:
-    - ${PGADMIN_PORT}:80
+    - mode: host
+      target: 80
+      published: ${PGADMIN_PORT}
+      protocol: tcp
     volumes:
     - type: bind
       # https://www.pgadmin.org/docs/pgadmin4/dev/export_import_servers.html

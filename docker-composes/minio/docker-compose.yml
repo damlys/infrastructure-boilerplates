@@ -1,4 +1,4 @@
-version: "2.4"
+version: "3.8"
 services:
   minio:
     image: minio/minio:latest
@@ -7,7 +7,10 @@ services:
       MINIO_SECRET_KEY: "${MINIO_PASSWORD}"
     command: ["minio", "server", "/data"]
     ports:
-    - ${MINIO_PORT}:9000
+    - mode: host
+      target: 9000
+      published: ${MINIO_PORT}
+      protocol: tcp
     volumes:
     - type: volume
       source: minio_data

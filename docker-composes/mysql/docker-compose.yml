@@ -1,7 +1,7 @@
-version: "2.4"
+version: "3.8"
 services:
   mysql:
-    image: mysql:5 #:latest
+    image: mysql:latest
     environment:
       MYSQL_ROOT_PASSWORD: "${MYSQL_PASSWORD}"
       MYSQL_USER: "${MYSQL_USER}"
@@ -25,7 +25,10 @@ services:
       PMA_USER: "${MYSQL_USER}"
       PMA_PASSWORD: "${MYSQL_PASSWORD}"
     ports:
-    - ${PHPMYADMIN_PORT}:80
+    - mode: host
+      target: 80
+      published: ${PHPMYADMIN_PORT}
+      protocol: tcp
 
 volumes:
   mysql_data:

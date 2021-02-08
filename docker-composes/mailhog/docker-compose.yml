@@ -1,4 +1,4 @@
-version: "2.4"
+version: "3.8"
 services:
   mailhog:
     image: mailhog/mailhog:latest
@@ -8,4 +8,7 @@ services:
         exec MailHog -auth-file=/home/mailhog/htpasswd
       "
     ports:
-    - ${MAILHOG_PORT}:8025
+    - mode: host
+      target: 8025
+      published: ${MAILHOG_PORT}
+      protocol: tcp

@@ -1,4 +1,4 @@
-version: "2.4"
+version: "3.8"
 services:
   redis:
     image: redis:latest
@@ -14,10 +14,13 @@ services:
     image: rediscommander/redis-commander:latest
     environment:
       HTTP_USER: "${REDIS_COMMANDER_USER}"
-      HTTP_PASSWORD: "${REDIS_PASSWORD}"
+      HTTP_PASSWORD: "${REDIS_COMMANDER_PASSWORD}"
       REDIS_HOSTS: "session:redis:6379:0:${REDIS_PASSWORD},cache:redis:6379:1:${REDIS_PASSWORD}"
     ports:
-    - ${REDIS_COMMANDER_PORT}:8081
+    - mode: host
+      target: 8081
+      published: ${REDIS_COMMANDER_PORT}
+      protocol: tcp
 
 volumes:
   redis_data:

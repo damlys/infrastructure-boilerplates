@@ -1,4 +1,4 @@
-version: "2.4"
+version: "3.8"
 services:
   rabbitmq:
     image: rabbitmq:management #:latest
@@ -10,7 +10,10 @@ services:
       source: rabbitmq_data
       target: /var/lib/rabbitmq
     ports:
-    - ${RABBITMQ_MANAGEMENT_PORT}:15672
+    - mode: host
+      target: 15672
+      published: ${RABBITMQ_MANAGEMENT_PORT}
+      protocol: tcp
 
 volumes:
   rabbitmq_data:
