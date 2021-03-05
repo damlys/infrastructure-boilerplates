@@ -3,6 +3,7 @@ resource "kubernetes_ingress" "http_server_ingress" {
   depends_on = [
     kubernetes_service.http_server_service
   ]
+  wait_for_load_balancer = true
   metadata {
     namespace = var.namespace_name
     name = local.common_name
