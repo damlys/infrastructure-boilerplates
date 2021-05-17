@@ -1,0 +1,35 @@
+version: "3.8"
+services:
+  elasticsearch:
+    image: docker.elastic.co/elasticsearch/elasticsearch:7.12.1
+    environment:
+      discovery.type: single-node
+    ports:
+      - mode: host
+        target: 9200
+        published: 39200
+        protocol: tcp
+      - mode: host
+        target: 9300
+        published: 39300
+        protocol: tcp
+    volumes:
+      - type: volume
+        source: elasticsearch_data
+        target: /usr/share/elasticsearch/data
+
+  kibana:
+    depends_on:
+      - elasticsearch
+    image: docker.elastic.co/kibana/kibana:7.12.1
+    environment:
+      ELASTICSEARCH_HOSTS: http://elasticsearch:9200
+    ports:
+      - mode: host
+        target: 5601
+        published: 35601
+        protocol: tcp
+
+volumes:
+  elasticsearch_data:
+    driver: local
