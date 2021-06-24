@@ -12,6 +12,7 @@ resource "kubernetes_horizontal_pod_autoscaler" "http_server_horizontal_pod_auto
     max_replicas = var.max_replicas
     target_cpu_utilization_percentage = var.target_cpu_utilization_percentage
     scale_target_ref {
+      api_version = "apps/v1"
       kind = "Deployment"
       name = local.common_name
     }

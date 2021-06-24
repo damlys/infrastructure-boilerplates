@@ -24,8 +24,8 @@ output "internal_endpoint" {
 }
 output "external_endpoint" {
   value = (
-  var.ingress_enabled ? "https://${var.ingress_host}" : (
-  var.service_type == "LoadBalancer" ? "http://${data.kubernetes_service.http_server_service.load_balancer_ingress.0.ip}" : (
-  var.service_type == "NodePort" ? "http://${data.kubernetes_service.http_server_service.spec.0.cluster_ip}:${data.kubernetes_service.http_server_service.spec.0.port.0.node_port}" : (
+  var.ingress_enabled ? "https://${var.ingress_host}${var.ingress_path}" : (
+  var.service_type == "LoadBalancer" ? "http://${data.kubernetes_service.http_server_service.status[0].load_balancer[0].ingress[0].hostname}" : (
+  var.service_type == "NodePort" ? "http://${data.kubernetes_service.http_server_service.spec[0].cluster_ip}:${data.kubernetes_service.http_server_service.spec[0].port[0].node_port}" : (
   ""))))
 }

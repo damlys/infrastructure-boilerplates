@@ -1,0 +1,20 @@
+# https://github.com/jetstack/cert-manager/blob/master/deploy/charts/cert-manager/values.yaml
+
+nodeSelector:
+  kubernetes.io/os: linux
+
+cainjector:
+  nodeSelector:
+    kubernetes.io/os: linux
+
+webhook:
+  nodeSelector:
+    kubernetes.io/os: linux
+
+installCRDs: true
+
+# https://cert-manager.io/docs/usage/ingress/#optional-configuration
+ingressShim:
+  defaultIssuerGroup: cert-manager.io
+  defaultIssuerKind: ClusterIssuer
+  defaultIssuerName: letsencrypt-prod

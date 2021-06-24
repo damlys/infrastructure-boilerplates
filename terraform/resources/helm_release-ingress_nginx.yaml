@@ -1,0 +1,14 @@
+# https://github.com/kubernetes/ingress-nginx/blob/master/charts/ingress-nginx/values.yaml
+
+controller:
+  replicaCount: 2
+  nodeSelector:
+    kubernetes.io/os: linux
+  service:
+    annotations:
+      service.beta.kubernetes.io/aws-load-balancer-cross-zone-load-balancing-enabled: "true"
+      service.beta.kubernetes.io/aws-load-balancer-backend-protocol: tcp
+      service.beta.kubernetes.io/aws-load-balancer-proxy-protocol: "*"
+  config:
+    use-proxy-protocol: true
+    real-ip-header: proxy_protocol

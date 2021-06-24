@@ -58,11 +58,11 @@ resource "kubernetes_deployment" "http_server_deployment" {
             }
           }
           resources {
-            requests {
+            requests = {
               cpu = var.resources.requests.cpu
               memory = var.resources.requests.memory
             }
-            limits {
+            limits = {
               cpu = var.resources.limits.cpu
               memory = var.resources.limits.memory
             }

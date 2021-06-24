@@ -27,7 +27,7 @@ resource "kubernetes_ingress" "http_server_ingress" {
       hosts = [
         var.ingress_host
       ]
-      secret_name = var.ingress_tls_secret_name
+      secret_name = "tls-${join("-", reverse(split(".", var.ingress_host)))}"
     }
   }
 }

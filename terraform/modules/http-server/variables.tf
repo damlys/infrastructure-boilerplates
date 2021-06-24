@@ -78,7 +78,7 @@ variable "max_replicas" {
 }
 variable "target_cpu_utilization_percentage" {
   type = number
-  default = null
+  default = 50
 }
 variable "strategy_type" {
   type = string
@@ -260,9 +260,5 @@ variable "ingress_host" {
 }
 variable "ingress_path" {
   type = string
-  default = null
-}
-variable "ingress_tls_secret_name" {
-  type = string
-  default = null
+  default = ""
 }

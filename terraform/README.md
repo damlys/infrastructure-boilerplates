@@ -1,24 +1,24 @@
 Initialize module
 
-```shell script
+```console
 $ terraform init
 ```
 
 Validate module
 
-```shell script
+```console
 $ terraform validate
 $ terraform plan
 ```
 
 Deploy
 
-```shell script
+```console
 $ terraform apply
 ```
 
 Destroy
 
-```shell script
+```console
 $ terraform destroy
 ```
