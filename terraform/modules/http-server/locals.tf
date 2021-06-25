@@ -10,4 +10,6 @@ locals {
   meta_labels = merge(local.match_labels, {
     "app.kubernetes.io/version": replace(var.image_tag, "/[^a-zA-Z0-9-_.]/", "__")
   })
+  tls_secret_name = "tls-${join("-", reverse(split(".", var.ingress_host)))}"
+  config_checksum = md5(jsonencode(merge(var.plain_environment_variables, var.secret_environment_variables)))
 }

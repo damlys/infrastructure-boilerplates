@@ -2,7 +2,7 @@
 # Manual edits may be lost in future updates.
 
 provider "registry.terraform.io/hashicorp/helm" {
-  version = "2.2.0"
+  version     = "2.2.0"
   constraints = ">= 2.0.0, < 3.0.0"
   hashes = [
     "h1:liBgOoOXhA2A1DbL0oaifyNnoGOyHxMG4+xD1Kl58XA=",
@@ -21,7 +21,7 @@ provider "registry.terraform.io/hashicorp/helm" {
 }
 
 provider "registry.terraform.io/hashicorp/kubernetes" {
-  version = "2.3.2"
+  version     = "2.3.2"
   constraints = ">= 2.0.0, < 3.0.0"
   hashes = [
     "h1:qxMfKMH8V4m+6oWbH8l/6LvvBJx5NEbJoXruL2OgNsI=",
@@ -40,7 +40,7 @@ provider "registry.terraform.io/hashicorp/kubernetes" {
 }
 
 provider "registry.terraform.io/loafoe/htpasswd" {
-  version = "0.9.1"
+  version     = "0.9.1"
   constraints = "0.9.1"
   hashes = [
     "h1:kky44FWzMsg2O4Ev6Bc9BZayLr51oB6YxQ28lFawfmA=",

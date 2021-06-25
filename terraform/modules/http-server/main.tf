@@ -1,7 +1,25 @@
-resource "kubernetes_deployment" "http_server_deployment" {
+resource "kubernetes_config_map" "this" {
+  metadata {
+    namespace = var.namespace_name
+    name = local.common_name
+    labels = local.meta_labels
+  }
+  data = var.plain_environment_variables
+}
+
+resource "kubernetes_secret" "this" {
+  metadata {
+    namespace = var.namespace_name
+    name = local.common_name
+    labels = local.meta_labels
+  }
+  data = var.secret_environment_variables
+}
+
+resource "kubernetes_deployment" "this" {
   depends_on = [
-    kubernetes_config_map.http_server_config_map,
-    kubernetes_secret.http_server_secret
+    kubernetes_config_map.this,
+    kubernetes_secret.this
   ]
   metadata {
     namespace = var.namespace_name
@@ -29,7 +47,7 @@ resource "kubernetes_deployment" "http_server_deployment" {
           "prometheus.io/scrape" = tostring(var.prometheus_scrape)
           "prometheus.io/port" = "http"
           "prometheus.io/path" = var.prometheus_path
-          "config-checksum" = md5(jsonencode(var.environment_variables))
+          "config-checksum" = local.config_checksum
         }, var.pod_annotations)
       }
       spec {
@@ -121,6 +139,86 @@ resource "kubernetes_deployment" "http_server_deployment" {
         }
         node_selector = var.node_selector
       }
+    }
+  }
+}
+
+resource "kubernetes_horizontal_pod_autoscaler" "this" {
+  depends_on = [
+    kubernetes_deployment.this
+  ]
+  metadata {
+    namespace = var.namespace_name
+    name = local.common_name
+    labels = local.meta_labels
+  }
+  spec {
+    min_replicas = var.min_replicas
+    max_replicas = var.max_replicas
+    target_cpu_utilization_percentage = var.target_cpu_utilization_percentage
+    scale_target_ref {
+      api_version = "apps/v1"
+      kind = "Deployment"
+      name = local.common_name
+    }
+  }
+}
+
+resource "kubernetes_service" "this" {
+  depends_on = [
+    kubernetes_deployment.this
+  ]
+  metadata {
+    namespace = var.namespace_name
+    name = local.common_name
+    labels = local.meta_labels
+    annotations = var.service_annotations
+  }
+  spec {
+    type = var.service_type
+    cluster_ip = var.service_type == "ClusterIP" ? var.service_cluster_ip : null
+    load_balancer_ip = var.service_type == "LoadBalancer" ? var.service_load_balancer_ip : null
+    port {
+      name = "http"
+      target_port = "http"
+      port = 80
+      node_port = var.service_type == "NodePort" ? var.service_node_port : null
+      protocol = "TCP"
+    }
+    selector = local.match_labels
+  }
+}
+
+resource "kubernetes_ingress" "this" {
+  count = var.ingress_enabled ? 1 : 0
+  depends_on = [
+    kubernetes_service.this
+  ]
+  wait_for_load_balancer = true
+  metadata {
+    namespace = var.namespace_name
+    name = local.common_name
+    labels = local.meta_labels
+    annotations = var.ingress_annotations
+  }
+  spec {
+    rule {
+      host = var.ingress_host
+      http {
+        path {
+          path = var.ingress_path
+          backend {
+            service_name = local.common_name
+            service_port = "http"
+          }
+        }
+      }
+    }
+    tls {
+      hosts = [
+        var.ingress_host
+      ]
+      secret_name = local.tls_secret_name
     }
   }
 }

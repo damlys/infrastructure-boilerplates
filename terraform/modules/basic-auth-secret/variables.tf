@@ -14,4 +14,5 @@ variable "basic_auth_username" {
 variable "basic_auth_password" {
   type = string
   default = "demo"
+  sensitive = true
 }

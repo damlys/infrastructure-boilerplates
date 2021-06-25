@@ -49,15 +49,13 @@ variable "container_args" {
   type = list(string)
   default = null
 }
-variable "environment_variables" {
-  type = object({
-    plain = map(string)
-    secret = map(string)
-  })
-  default = {
-    plain = {}
-    secret = {}
-  }
+variable "plain_environment_variables" {
+  type = map(string)
+  default = {}
+}
+variable "secret_environment_variables" {
+  type = map(string)
+  default = {}
   sensitive = true
 }
 
