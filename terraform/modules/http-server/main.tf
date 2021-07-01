@@ -17,10 +17,6 @@ resource "kubernetes_secret" "this" {
 }
 
 resource "kubernetes_deployment" "this" {
-  depends_on = [
-    kubernetes_config_map.this,
-    kubernetes_secret.this
-  ]
   metadata {
     namespace = var.namespace_name
     name = local.common_name
@@ -67,12 +63,12 @@ resource "kubernetes_deployment" "this" {
           args = var.container_args
           env_from {
             config_map_ref {
-              name = local.common_name
+              name = kubernetes_config_map.this.metadata[0].name
             }
           }
           env_from {
             secret_ref {
-              name = local.common_name
+              name = kubernetes_secret.this.metadata[0].name
             }
           }
           resources {
@@ -144,9 +140,6 @@ resource "kubernetes_deployment" "this" {
 }
 
 resource "kubernetes_horizontal_pod_autoscaler" "this" {
-  depends_on = [
-    kubernetes_deployment.this
-  ]
   metadata {
     namespace = var.namespace_name
     name = local.common_name
@@ -159,7 +152,7 @@ resource "kubernetes_horizontal_pod_autoscaler" "this" {
     scale_target_ref {
       api_version = "apps/v1"
       kind = "Deployment"
-      name = local.common_name
+      name = kubernetes_deployment.this.metadata[0].name
     }
   }
 }
@@ -191,9 +184,6 @@ resource "kubernetes_service" "this" {
 
 resource "kubernetes_ingress" "this" {
   count = var.ingress_enabled ? 1 : 0
-  depends_on = [
-    kubernetes_service.this
-  ]
   wait_for_load_balancer = true
   metadata {
     namespace = var.namespace_name
@@ -208,7 +198,7 @@ resource "kubernetes_ingress" "this" {
         path {
           path = var.ingress_path
           backend {
-            service_name = local.common_name
+            service_name = kubernetes_service.this.metadata[0].name
             service_port = "http"
           }
         }
