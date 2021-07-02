@@ -1,7 +1,7 @@
 resource "kubernetes_config_map" "this" {
   metadata {
-    namespace = var.namespace_name
-    name = local.common_name
+    namespace = var.k8s_namespace_name
+    name = var.k8s_resources_name
     labels = local.meta_labels
   }
   data = var.plain_environment_variables
@@ -9,8 +9,8 @@ resource "kubernetes_config_map" "this" {
 
 resource "kubernetes_secret" "this" {
   metadata {
-    namespace = var.namespace_name
-    name = local.common_name
+    namespace = var.k8s_namespace_name
+    name = var.k8s_resources_name
     labels = local.meta_labels
   }
   data = var.secret_environment_variables
@@ -18,8 +18,8 @@ resource "kubernetes_secret" "this" {
 
 resource "kubernetes_deployment" "this" {
   metadata {
-    namespace = var.namespace_name
-    name = local.common_name
+    namespace = var.k8s_namespace_name
+    name = var.k8s_resources_name
     labels = local.meta_labels
   }
   spec {
@@ -56,7 +56,7 @@ resource "kubernetes_deployment" "this" {
           }
         }
         container {
-          name = local.common_name
+          name = "http-server"
           image = "${var.image_name}:${var.image_tag}"
           image_pull_policy = var.image_pull_policy
           command = var.container_command
@@ -141,8 +141,8 @@ resource "kubernetes_deployment" "this" {
 
 resource "kubernetes_horizontal_pod_autoscaler" "this" {
   metadata {
-    namespace = var.namespace_name
-    name = local.common_name
+    namespace = var.k8s_namespace_name
+    name = var.k8s_resources_name
     labels = local.meta_labels
   }
   spec {
@@ -162,8 +162,8 @@ resource "kubernetes_service" "this" {
     kubernetes_deployment.this
   ]
   metadata {
-    namespace = var.namespace_name
-    name = local.common_name
+    namespace = var.k8s_namespace_name
+    name = var.k8s_resources_name
     labels = local.meta_labels
     annotations = var.service_annotations
   }
@@ -186,8 +186,8 @@ resource "kubernetes_ingress" "this" {
   count = var.ingress_enabled ? 1 : 0
   wait_for_load_balancer = true
   metadata {
-    namespace = var.namespace_name
-    name = local.common_name
+    namespace = var.k8s_namespace_name
+    name = var.k8s_resources_name
     labels = local.meta_labels
     annotations = var.ingress_annotations
   }

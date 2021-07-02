@@ -13,12 +13,20 @@ module "playground_basic_auth" {
 module "kuard_staging" {
   source = "./modules/http-server"
 
-  namespace_name = kubernetes_namespace.playground.metadata[0].name
-  names_prefix = "kuard-"
-  names_suffix = "-staging"
+  k8s_namespace_name = kubernetes_namespace.playground.metadata[0].name
+  k8s_resources_name = "kuard-staging"
 
   image_name = "gcr.io/kuar-demo/kuard-amd64"
   image_tag = "v0.9-purple"
+
+  plain_environment_variables = {
+    EXAMPLE_A = "staging-example-a"
+    EXAMPLE_B = "staging-example-b"
+  }
+  secret_environment_variables = {
+    SECRET_A = "staging-secret-a"
+    SECRET_B = "staging-secret-b"
+  }
 
   liveness_probe_http_get_path = "/healthy"
   readiness_probe_http_get_path = "/ready"
@@ -43,12 +51,20 @@ output "kuard_staging_external_endpoint" {
 module "kuard_prod" {
   source = "./modules/http-server"
 
-  namespace_name = kubernetes_namespace.playground.metadata[0].name
-  names_prefix = "kuard-"
-  names_suffix = "-prod"
+  k8s_namespace_name = kubernetes_namespace.playground.metadata[0].name
+  k8s_resources_name = "kuard-prod"
 
   image_name = "gcr.io/kuar-demo/kuard-amd64"
   image_tag = "v0.9-green"
+
+  plain_environment_variables = {
+    EXAMPLE_A = "prod-example-a"
+    EXAMPLE_B = "prod-example-b"
+  }
+  secret_environment_variables = {
+    SECRET_A = "prod-secret-a"
+    SECRET_B = "prod-secret-b"
+  }
 
   min_replicas = 2
   max_replicas = 3

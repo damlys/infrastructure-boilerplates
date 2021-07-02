@@ -1,15 +1,11 @@
 /*
  * Metadata
  */
-variable "namespace_name" {
+variable "k8s_namespace_name" {
   type = string
   default = "default"
 }
-variable "names_prefix" {
-  type = string
-  default = ""
-}
-variable "names_suffix" {
+variable "k8s_resources_name" {
   type = string
   default = ""
 }

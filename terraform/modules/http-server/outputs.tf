@@ -1,5 +1,5 @@
 output "internal_endpoint" {
-  value = "http://${local.common_name}"
+  value = "http://${var.k8s_resources_name}"
 }
 output "external_endpoint" {
   value = (
